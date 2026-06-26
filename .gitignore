@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Playwright
+screenshots/
+traces/
+allure-results/
+allure-report/
+test-results/
+
+# Snapshots (commit these — they are your visual baselines)
+# src/tests/__snapshots__/   <-- DO commit this folder
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
