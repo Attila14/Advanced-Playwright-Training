@@ -17,7 +17,8 @@ The training targets a real, live application: [testauto.app/task-manager-spa](h
 ## 📋 Verification of the training will be done using a reviewer agent with GitHub Copilot
   Once you have finished the exercises, you need to run through GitHub Copilot a review of your project. Follow the following steps:
   1.On GitHub Copilot, select the agent mode together with the review.md file from the .github/agents/review.md 
-  2. Enter the following prompt 'Review my exercises and follow closely the SDET best practices and provide a '
+  2. Enter the following prompt 'Review my exercises and follow closely the instructions on the review.md agent and create a report in my project' and select a capable LLM then hit enter
+  3. Provide the report to us
 
 ---
 
