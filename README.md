@@ -284,6 +284,98 @@ This is a training project. Feel free to add test cases, improve page objects, o
 
 ## 📖 Resources
 
+Videos regarding each and every exercise 
+
+UI Testing — Browser & Page
+Point 1
+https://www.youtube.com/watch?v=XSHERugHQCY
+Playwright with Python And Pytest (playlist)
+
+Point 2
+https://www.youtube.com/watch?v=egqzRXOc7cU
+https://www.youtube.com/watch?v=qjqAe8qe0kY
+
+UI Testing — Locators & Interactions
+Point 3
+https://www.youtube.com/watch?v=MXFAHvcqh7I
+For the advanced parts — filter(), nth(), first, last, dynamic loops, and board-column scoping we can use the following link:
+  6-Playwright_MOD3_MOD4.pptx
+
+Point 4
+https://www.youtube.com/watch?v=LrOXygsYnnk
+https://www.youtube.com/watch?v=Zu_qzwH8zSs
+https://www.youtube.com/watch?v=HNGPAjk_BCI
+For HAR and page metrics https://ray.run/videos/148-network-replay-har-playwright-tutorial-part-79 (documentation)
+
+
+Point 5
+https://www.youtube.com/watch?v=O5AyMSxfFbg
+https://www.youtube.com/watch?v=LrOXygsYnnk
+
+Point 6
+https://www.youtube.com/watch?v=h-fpoNZdWCg
+https://www.youtube.com/watch?v=AGYZk9ZlA4s&list=PLP5_A7hnY1Tj4pbbDY29wPdEgWu65uiWL
+https://www.youtube.com/watch?v=lDK7UKWC0ak
+https://www.youtube.com/watch?v=k488kAtT-Pw
+https://python.plainenglish.io/enhancing-the-page-object-pattern-with-reusable-components-in-playwright-python-5a6d4481de30 (documentation)
+
+
+Point 7
+https://www.youtube.com/watch?v=N_rCdPoltWo
+https://playwright.dev/python/docs/test-runners (documentation)
+https://docs.pytest.org/en/stable/reference/fixtures.html (documentation)
+
+Point 8
+https://www.youtube.com/watch?v=TSWXTqjMDkI
+https://www.youtube.com/watch?v=tBnfDaPAH44
+https://pytest-xdist.readthedocs.io/en/stable/how-to.html (documentation)
+
+Point 9
+https://www.youtube.com/watch?v=VHwl78QXF_0
+https://allurereport.org/docs/playwright/ (documentation)
+https://qaskills.sh/blog/playwright-allure-attachment-trace-guide (documentation)
+https://www.browserstack.com/guide/integrate-allure-with-playwright (documentation)
+https://github.com/nirtal85/Playwright-Python-Example (documentation)
+
+
+Point 10
+https://www.youtube.com/playlist?list=PLHT5rv7PEE4Oa19_17xS4I5Rbn297WJkt
+https://www.youtube.com/playlist?list=PLhW3qG5bs-L8WcAa9cfXaqGe0-Cq85y4X (playlist)
+https://www.youtube.com/watch?v=XSHERugHQCY
+
+Point 11
+https://playwright.dev/python/docs/api-testing (documentation)
+https://www.youtube.com/watch?v=qyCPtbEztvw
+https://medium.com/@gunashekarr11/handling-pagination-filtering-sorting-validations-through-the-playwright-api-layer-612f010f0943 (documentation)
+
+Point 12
+Already covered from previous videos for Fixtures, API Testing, Parallel Execution
+https://www.youtube.com/watch?v=HPP_62VJQ3g
+
+
+Point 13
+https://www.youtube.com/watch?v=dv95_b8F8qM
+https://playwright.dev/python/docs/api-testing (documentation)
+https://dev.to/ramamallika_kadali_49a08f/day-7-how-i-use-playwright-for-api-and-ui-testing-together-lh (documentation)
+
+
+Point 14
+https://playwrightqa.blogspot.com/2024/10/testing-multiple-users-and-roles-with.html (documentation)
+https://medium.com/@edtang44/isolate-and-conquer-multi-user-testing-with-playwright-fixtures-f211ad438974 (documentation)
+https://www.neovasolutions.com/2024/11/14/handling-authentication-for-multiple-user-logins-in-playwright/ (documentation)
+https://www.youtube.com/watch?v=XSHERugHQCY
+https://www.youtube.com/watch?v=o-R1PTJ5Lws
+https://www.youtube.com/watch?v=0mfLHPLZ7_k
+
+Point 15
+https://www.youtube.com/watch?v=NSDdeDYr3dY
+https://www.youtube.com/watch?v=axBr9gnITOo
+
+
+
+
+
+
 - [Playwright Python Documentation](https://playwright.dev/python/docs/intro)
 - [pytest Documentation](https://docs.pytest.org/)
 - [testauto.app Docs](https://testauto.app/docs)
