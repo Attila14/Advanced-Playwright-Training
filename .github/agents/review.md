@@ -79,4 +79,26 @@ When reviewing a solution PR, check for:
 - Suggest the fix, don't just flag the problem
 - Acknowledge when something is done well
 
+### Generate Report
+Create a **CONCISE** Markdown report named `REVIEW_REPORT_[Date].md`.
+
+**⚠️ CRITICAL SIZE CONSTRAINTS (MANDATORY):**
+- **Maximum report size: 800 lines or 12,000 tokens**
+- **Use tables for ALL scoring** (more compact than prose)
+- **NO code examples in report** (only file references)
+- **Summarize, don't enumerate** (e.g., "4 tests passed" not listing each)
+- **If report generation fails with error, it's too long - simplify further**
+
+**Required Report Structure (Streamlined):**
+
+1. **Executive Summary** (1 table) - this is just an example
+   ```
+   | Category | Score | Max | Status |
+   |----------|-------|-----|--------|
+   | 01 Exercise | X | 2 | ... |
+   | 02 Exercise  | X | 4.1 | ... |
+   | 03 Exercise  | X | 5.88 | ... |
+   | TOTAL SCORE | X | 11.98 | ... |
+   ```
+
   
