@@ -93,72 +93,246 @@ All 5 smoke tests should pass — you are ready to start.
 
 ## 🎯 Training Exercises
 
-The following guided exercises are available in the `Exercises/` folder:
+The training is divided into a series of progressively advanced exercises located in the **`Exercises/`** folder. Each exercise focuses on a specific area of Playwright, pytest, and modern test automation practices.
 
-### UI Testing — Browser & Page
+Work through the exercises in order, as later topics build on concepts introduced in earlier modules.
 
-**01_BrowserContextManagement.md:**
-Browser vs context vs page lifecycle; multiple contexts simultaneously; saving and restoring auth state; viewport configuration; simulating two users at once
+---
 
-**02_NetworkInterception.md:**
-Intercept real API calls with `page.route()`; stub empty states; inject data into live responses; capture outgoing requests; simulate server errors and slow networks
+# UI Testing — Browser & Page
 
-### UI Testing — Locators & Interactions
+## 01_BrowserContextManagement.md
 
-**03_AdvancedLocatorStrategies.md:**
-Semantic locators `get_by_role`, `get_by_label`, `get_by_placeholder`; `filter()` to scope by text; `nth()`, `first`, `last`; board view column scoping; dynamic filter loops
+Learn how Playwright manages browsers, contexts, and pages, including:
 
-**04_PerformanceAndTracing.md:**
-Playwright trace recorder and viewer; HAR file capture and analysis; page timing metrics; console error detection; auto-save traces on test failure
+- Browser vs Context vs Page lifecycle
+- Running multiple browser contexts simultaneously
+- Saving and restoring authentication state
+- Viewport configuration
+- Simulating multiple users in parallel sessions
 
-### UI Testing — Test Quality
+---
 
-**05_VisualTesting.md:**
-Raw screenshot capture with Pillow pixel-diff comparison; masking dynamic columns; element-level screenshots; mobile vs desktop comparison
+## 02_NetworkInterception.md
 
-**06_AdvancedPOMPatterns.md:**
-Component objects for reusable UI pieces; `BasePage` with shared methods; `SearchBar`, `Pagination`, `TaskModal` components; fixture-integrated page objects
+Master network-level testing and interception techniques:
 
-### Advanced Test Design
+- Intercept API calls with `page.route()`
+- Stub empty-state responses
+- Inject custom data into live responses
+- Capture and inspect outgoing requests
+- Simulate server errors
+- Emulate slow or unstable networks
 
-**07_FixturesAndTestLifecycle.md:**
-Fixture scopes (function, class, module, session); factory fixtures with automatic cleanup; `autouse` hooks; `@pytest.mark.parametrize`; class-scoped browser contexts
+---
 
-**08_ParallelExecutionAndSharding.md:**
-pytest-xdist parallel runs; isolation design with uuid; worker ID fixture; `@pytest.mark.fast` / `slow`; CI matrix sharding
+# UI Testing — Locators & Interactions
 
-**09_AllureReporting.md:**
-Epic/feature/story hierarchy; `allure.step` annotations; screenshot and JSON attachments; severity levels; auto-attach on failure; GitHub Pages publishing
+## 03_AdvancedLocatorStrategies.md
 
-### API Testing
+Build reliable and maintainable UI tests using advanced locator patterns:
 
-**10_APIAuthentication.md:**
-JWT login flow; token handling; token refresh; unauthenticated request rejection; multi-user access scenarios
+- Semantic locators:
+  - `get_by_role()`
+  - `get_by_label()`
+  - `get_by_placeholder()`
+- Text-based filtering with `filter()`
+- Using `nth()`, `first`, and `last`
+- Board-view column scoping
+- Dynamic locator loops
 
-**11_AdvancedResponseValidation.md:**
-Full schema validation; pagination consistency; filter accuracy; response time bounds; sorting verification
+---
 
-**12_APIFixturesAndTestData.md:**
-Factory fixtures with all fields; task + comments fixture; bulk factory for pagination tests; module-scoped read-only data; proving cleanup works
+## 04_PerformanceAndTracing.md
 
-**13_ChainedWorkflowsAndHybridTests.md:**
-Multi-step CRUD chains; comment lifecycle; hybrid API-create + UI-verify; hybrid UI-create + API-verify; status transition workflow
+Learn debugging, diagnostics, and performance analysis:
 
-**14_MultiUserAndRoleBasedTesting.md:**
-Documenting access permissions; concurrent creation; permission boundary assertions; two simultaneous browser sessions
+- Playwright Trace Recorder
+- Trace Viewer
+- HAR file capture and analysis
+- Page performance metrics
+- Console error monitoring
+- Automatic trace capture on failure
 
-**15_ResilienceAndEdgeCases.md:**
-Retry with exponential backoff; buggy API handling; boundary values (empty, long, unicode); invalid enum values; missing required fields; concurrent requests
+---
 
-### Data-Driven Testing
+# UI Testing — Test Quality
 
-**16_DataDrivenTestingGUIAndAPI.md:**
-`@pytest.mark.parametrize` for all priorities and statuses; shared data sets across UI and API tests; form validation parametrize; filter combination testing
+## 05_VisualTesting.md
 
-**17_AutoWaitingAndFlakiness.md:**
-Replace `wait_for_load_state("networkidle")` and `time.sleep()` with web-first `expect()` assertions; SPA-safe waiting strategies; `authenticated_page` fixture with storage_state reuse
+Implement visual validation techniques for modern web applications:
 
-Use these exercises as a step-by-step guide. Each file contains tasks and scenarios to implement. Work through them in order — later exercises build on earlier ones.
+- Screenshot capture
+- Pixel-by-pixel comparison using Pillow
+- Masking dynamic content
+- Element-level screenshots
+- Mobile vs Desktop visual comparison
+
+---
+
+## 06_AdvancedPOMPatterns.md
+
+Design scalable automation frameworks using advanced Page Object Model patterns:
+
+- Reusable Component Objects
+- Shared `BasePage` implementation
+- `SearchBar` component
+- `Pagination` component
+- `TaskModal` component
+- Fixture-integrated page objects
+
+---
+
+# Advanced Test Design
+
+## 07_FixturesAndTestLifecycle.md
+
+Explore advanced pytest fixture design and lifecycle management:
+
+- Fixture scopes:
+  - Function
+  - Class
+  - Module
+  - Session
+- Factory fixtures
+- Automatic cleanup
+- `autouse` fixtures
+- `@pytest.mark.parametrize`
+- Class-scoped browser contexts
+
+---
+
+## 08_ParallelExecutionAndSharding.md
+
+Learn how to scale test execution efficiently:
+
+- Running tests in parallel using `pytest-xdist`
+- Test isolation strategies with UUIDs
+- Worker ID fixtures
+- Fast and slow test markers
+- CI matrix sharding
+
+---
+
+## 09_AllureReporting.md
+
+Generate professional test reports with Allure:
+
+- Epic → Feature → Story hierarchy
+- `allure.step()` annotations
+- Screenshots and JSON attachments
+- Severity levels
+- Automatic attachments on failure
+- GitHub Pages report publishing
+
+---
+
+# API Testing
+
+## 10_APIAuthentication.md
+
+Implement authentication testing with JWT-based APIs:
+
+- JWT login workflows
+- Access token management
+- Token refresh handling
+- Unauthorized request validation
+- Multi-user authentication scenarios
+
+---
+
+## 11_AdvancedResponseValidation.md
+
+Perform thorough API response validation:
+
+- Schema validation
+- Pagination consistency checks
+- Filter accuracy verification
+- Response-time assertions
+- Sorting validation
+
+---
+
+## 12_APIFixturesAndTestData.md
+
+Create reusable and maintainable API test data strategies:
+
+- Factory fixtures
+- Complete task fixtures
+- Task + comments fixtures
+- Bulk data generation
+- Module-scoped shared data
+- Cleanup verification
+
+---
+
+## 13_ChainedWorkflowsAndHybridTests.md
+
+Combine API and UI testing into end-to-end workflows:
+
+- Multi-step CRUD workflows
+- Comment lifecycle validation
+- API Create → UI Verify
+- UI Create → API Verify
+- Status transition testing
+
+---
+
+## 14_MultiUserAndRoleBasedTesting.md
+
+Validate access control and multi-user scenarios:
+
+- Role and permission documentation
+- Concurrent user actions
+- Permission boundary testing
+- Multiple browser sessions running simultaneously
+
+---
+
+## 15_ResilienceAndEdgeCases.md
+
+Build resilient tests capable of handling real-world failures:
+
+- Retry with exponential backoff
+- Buggy API handling
+- Boundary value testing
+- Empty input validation
+- Long text validation
+- Unicode testing
+- Invalid enum values
+- Missing required fields
+- Concurrent request handling
+
+---
+
+# Data-Driven Testing
+
+## 16_DataDrivenTestingGUIAndAPI.md
+
+Create scalable, data-driven test suites:
+
+- `@pytest.mark.parametrize`
+- Priority and status coverage
+- Shared datasets across UI and API tests
+- Form validation scenarios
+- Filter-combination testing
+
+---
+
+## 17_AutoWaitingAndFlakiness.md
+
+Eliminate flaky tests using Playwright's built-in waiting mechanisms:
+
+- Replacing `time.sleep()`
+- Replacing `wait_for_load_state("networkidle")`
+- Web-first assertions with `expect()`
+- SPA-safe waiting strategies
+- Reusable `authenticated_page` fixture
+- Authentication state reuse with `storage_state`
+
+---
+
+> 💡 **Recommendation:** Complete the exercises sequentially. Each module introduces concepts that are leveraged in later exercises, helping you build a production-ready Playwright automation framework step by step.
 
 ---
 
