@@ -4,6 +4,14 @@ This is a skeleton Python project for learning advanced test automation with AI-
 
 ## 📋 Overview
 
+Advanced Self-Study Training Program  ** Organizatory curriculum **
+
+This training is designed as an advanced self-study program. Participants will follow the instructions provided in the README.md file, clone the repository, and complete the required exercises independently.
+To support the learning process, participants can refer to the videos linked within the README.md documentation. The expected duration of the training is up to 40 hours. However, if additional time is needed, participants may continue at a reasonable pace until they complete all requirements.
+
+For questions or support during the training, a dedicated Microsoft Teams group will be available. Participants can post their questions there, and the trainers will respond as their availability permits.
+Upon completing the training, participants must review their solutions using the AI agent provided in the .github folder. Instructions for running and using the agent are available in the README.md file. The resulting output should then be shared in the Microsoft Teams group for review and feedback.
+**************************************************************************************************************************
 This project demonstrates advanced test automation using:
 
 - **Playwright for Python** for UI/Web and API testing
