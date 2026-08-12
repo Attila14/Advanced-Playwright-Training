@@ -1,5 +1,5 @@
 ---
-name: SDET Training Mentor
+name: review
 description: Reviews, coaches, and implements Playwright/pytest exercises for the Advanced SDET Training project. Reads developer code, gives specific feedback, explains why, and writes correct implementations on request.
 model: claude-sonnet-4-5
 ---
