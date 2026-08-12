@@ -1,0 +1,138 @@
+EXAMPLE CODE SUMMARY — SDET Training Mentor Agent Test Files
+=============================================================
+All files written from the actual exercise markdown requirements (Exercises/*.md).
+Each file preserves section dividers, docstrings, numbered TODO steps, and adds
+partial/wrong developer code so the agent can identify and fix the mistakes.
+
+HOW TO USE
+----------
+1. Open GitHub Copilot (agent mode) or Claude Code
+2. Select the agent: .github/agents/review.md (Copilot) or .claude/agents/review.md (Claude Code)
+3. Prompt: "Review my exercises, explain the errors, and fix them"
+
+---
+
+FILE OVERVIEW
+-------------
+
+Exercise 01 — test_browser_context.py (UI)
+  Partial code : Task 1 (ctx2 never closed — resource leak; no independence assertion)
+                 Task 2 (storage_state not passed to new_context; time.sleep and bare assert used)
+  Not attempted: Task 3, 4, 5
+
+Exercise 02 — test_network.py (UI)
+  Partial code : Task 1 (route correct but no UI assertion for empty state)
+                 Task 2 (route.fulfill(json=fake_task) replaces whole response instead of injecting into content[])
+                 Task 3 (expect_request called AFTER goto — request already fired)
+                 Task 4 (time.sleep used, no error state assertion)
+  Not attempted: Task 5 (slow_handler with route.continue_())
+
+Exercise 03 — test_selectors.py (UI)
+  Partial code : Task 1 (CSS selectors used: input[type='text'], nav a[href*='taskModal'])
+                 Task 2 (filter correct but td:nth-child(4) is positional/fragile; count not checked)
+                 Task 5 (hardcoded titles without uuid; cleanup outside try/finally)
+  Not attempted: Task 3 (items-per-page + first/last), Task 4 (board view)
+
+Exercise 04 — test_performance.py (UI)
+  Partial code : Task 1 (tracing.start called, tracing.stop NEVER called — no zip written)
+                 Task 2 (context created without record_har_path — no HAR recorded)
+                 Task 3 (metrics fetched as string, never parsed or asserted)
+                 Task 4 (all console messages collected, no .type=="error" filter or assertion)
+  Not attempted: Task 5 (traced_page autosave fixture + test_intentional_failure_with_trace)
+
+Exercise 05 — test_visual.py (UI)
+  Partial code : Task 1 (only one screenshot, size not asserted; board/modal views missing)
+                 Task 2 (calls compare_screenshots which raises NotImplementedError)
+                 Task 4 (uses .pagination CSS class instead of resilient multi-selector)
+  Not attempted: Task 3 (mask_regions), Task 5 (desktop vs mobile diff)
+  CRITICAL     : compare_screenshots() and mask_regions() both raise NotImplementedError
+
+Exercise 07 — test_fixtures.py (UI/API)
+  Partial code : task_factory fixture (return make instead of yield make — no teardown)
+                 module_task fixture (scope="function" instead of scope="module")
+                 test_create_todo_task (creates task but factory never cleans up)
+  Not attempted: Task 2 (parametrize), Task 4 (class-scoped autouse), Task 5 (log_test_name)
+
+Exercise 08 — test_parallel.py (API)
+  Partial code : test_parallel_alpha (hardcoded title "Parallel Alpha Task" — collides under -n auto)
+                 test_slow_full_flow (wait_for_load_state("networkidle") + bare assert count > 0)
+  Implemented  : test_parallel_beta (correct — uuid title, try/finally)
+  Not attempted: test_parallel_gamma/delta/epsilon bodies, sharding steps
+
+Exercise 09 — test_allure.py (UI/API)
+  Partial code : TestTaskListUI, TestAPIV1 (missing @allure.epic/feature/story class decorators)
+                 test_create_task_via_ui_with_steps (has @allure decorators but no allure.step() blocks)
+                 test_attach_screenshot_and_api_data (screenshot taken but allure.attach() never called)
+  Not attempted: Task 4 (screenshot_on_failure fixture in conftest.py)
+
+Exercise 10 — test_api_auth.py (API)
+  Partial code : test_valid_login (assertions correct but ctx.dispose() missing — resource leak)
+                 test_wrong_password (asserts 200 instead of 401)
+                 test_create_task_authenticated (hardcoded title, no try/finally cleanup)
+  Not attempted: test_unknown_user, update, delete, unauthenticated, refresh, multi-user
+
+Exercise 11 — test_api_validation.py (API)
+  Partial code : validate_task_schema (raises NotImplementedError)
+                 test_all_tasks_have_valid_schema (calls unimplemented helper)
+                 test_page_size_respected (size param not passed in GET /tasks)
+                 test_total_pages_is_consistent (wrong formula: totalPages == totalElements)
+                 test_filter_by_status_todo (only checks HTTP 200, not per-task status)
+                 test_response_time_get_tasks (threshold 30s instead of 3s)
+  Not attempted: beyond-last-page, IN_PROGRESS/HIGH/combined filters, summary/create timing, sorting
+  CRITICAL     : validate_task_schema() raises NotImplementedError
+
+Exercise 12 — test_api_data.py (API)
+  Partial code : task_factory (return instead of yield — no teardown)
+                 bulk_task_factory (only deletes created_ids[0] in teardown — rest leak)
+                 module_task (scope="function" instead of scope="module")
+  Not attempted: task_with_comments fixture body, test_bulk_pagination, test_cleanup_runs_on_failure
+                 (test_cleanup_runs_on_failure has assert False intentionally)
+
+Exercise 13 — test_workflows.py (API/UI)
+  Partial code : test_full_crud_chain (create + GET done; PUT, second GET, DELETE, 404 missing)
+                 test_api_create_ui_verify (API create done; page.goto, search, modal assertion missing)
+  Not attempted: Task 2 (comment chain), Task 4 (UI create → API verify), Task 5 (status transition)
+
+Exercise 14 — test_multi_user.py (API)
+  Partial code : test_admin_creates_user_reads (uses admin_ctx for both roles; no cleanup)
+  Not attempted: Task 1 (permission table), Task 3 (concurrent creation), Task 4 (cross-user delete), Task 5 (browser sessions)
+
+Exercise 15 — test_resilience.py (API)
+  Partial code : call_with_retry (raises NotImplementedError)
+                 test_retry_buggy_endpoint (calls unimplemented helper)
+                 test_boundary_empty_title (asserts 201 instead of 400/422)
+                 test_boundary_long_title (no cleanup in finally)
+                 test_concurrent_requests (sequential for loop, not threading.Thread; hardcoded title)
+  Not attempted: test_boundary_single_char, 255-char, invalid priority, empty body, missing fields
+  CRITICAL     : call_with_retry() raises NotImplementedError
+
+Exercise 16 — test_data_driven.py (UI/API)
+  Partial code : test_api_create_with_priority (no try/finally — task leaks on failure)
+                 test_status_filter_parametrized (filter selected, rows never verified)
+  Not attempted: test_ui_detail_shows_status, scenario tests, form validation
+  NOTE         : task_factory fixture used but NOT defined in conftest.py (must be added)
+
+Exercise 17 — test_auto_waiting.py (UI)
+  Partial code : test_task_list_loads (networkidle + bare assert count > 0)
+                 test_login_modal_open_close (two time.sleep(1) calls)
+                 test_row_count_updates_after_api_create (only one task created, misses count_before;
+                   time.sleep(2) after reload; asserts count > 0 instead of count_before + 1)
+  Not attempted: Task 3 (filter + row assertion), Task 5 (auth state)
+
+---
+
+COMMON PATTERNS TO FIX (for the agent)
+---------------------------------------
+1.  time.sleep()                → expect(locator).to_be_visible() or to_have_count()
+2.  wait_for_load_state(        → expect() web-first assertions
+    "networkidle")
+3.  assert locator.is_visible() → expect(locator).to_be_visible()
+4.  CSS selectors in tests      → get_by_role(), get_by_label(), get_by_placeholder()
+5.  No try/finally cleanup      → wrap POST/create in try/finally, DELETE in finally block
+6.  Hardcoded task titles       → f"Task {uuid.uuid4()}"
+7.  raise NotImplementedError   → actual implementation required
+8.  Wrong fixture scope         → scope="module" or scope="session" where appropriate
+9.  return instead of yield     → yield + finally cleanup block in fixtures
+10. Context not disposed        → ctx.dispose() or browser_context.close() in finally
+11. Wrong assertion value       → correct HTTP status (401 not 200, 400 not 201, etc.)
+12. Missing allure decorators   → @allure.epic / @allure.feature / @allure.story on classes
