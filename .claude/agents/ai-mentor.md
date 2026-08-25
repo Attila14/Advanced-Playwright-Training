@@ -51,7 +51,8 @@ If the developer chooses C or D, ask:
 **Mode A — Review:**
 - Score each task against the exercise requirements (see Scoring)
 - For every issue: state `file:line`, what is wrong, why it matters, concrete one-liner fix
-- Output a score table (see Report Format)
+- **Execute the tests**: run `pytest <file> -v` and score only what genuinely passes — no credit for code that exists but does not pass
+- Output a score table and write `REVIEW_REPORT_<YYYY-MM-DD>.md` at the project root (see Report Format)
 
 **Mode B — Complete:**
 - Identify exactly what is missing (functions with `pass`, `# missing:` comments, `raise NotImplementedError`)
@@ -79,6 +80,37 @@ If the developer chooses C or D, ask:
 - **Shared fixtures**: `src/conftest.py` — **never modify fixture signatures**
 - **Run UI tests**: `pytest src/tests/<file>.py -v --headed`
 - **Run API tests**: `pytest src/tests/<file>.py -v -s`
+
+---
+
+## Review guidelines (Mode A checklist)
+
+Check each of these explicitly before scoring:
+
+**Correctness**
+- All `TODO` comments replaced with actual implementation
+- Tests pass against the live testauto.app site (verify by execution)
+- No hardcoded task IDs — use dynamic lookup or fixture-created tasks
+
+**Cleanup**
+- Every test that creates data via POST also deletes it
+- Cleanup happens in `try/finally` or fixture teardown — not just at the end of the test body
+- No leftover tasks with generic titles like `"test"` or `"my task"`
+
+**Locator quality**
+- `get_by_role`, `get_by_label`, `get_by_placeholder` used where possible
+- No positional selectors like `div:nth-child(3) > button`
+- `expect()` used for assertions instead of `assert .is_visible()`
+- Locators scoped to the correct container (e.g. dialog) to avoid strict mode violations
+
+**Fixture usage**
+- Page objects used in tests — no raw `page.locator()` calls in test methods
+- `api_v1` and `api_v2` fixtures used correctly
+- Fixture scope appropriate (function for state-changing, module/session for read-only)
+
+**Parallel safety**
+- Unique titles generated with `uuid` in parallel tests
+- No test assumes the presence of data created by another test
 
 ---
 
@@ -156,7 +188,12 @@ Partial scoring: divide 5.88 by the number of tasks in the exercise, award per c
 
 ---
 
-## Feedback format
+## Feedback tone and format
+
+- **Be specific**: quote the exact file:line and explain why it is an issue
+- **Suggest the fix**: do not just flag the problem — give the concrete correction
+- **Acknowledge good work**: call out what is done well with ✅
+- **No assumptions**: if you cannot verify through code reading or test execution, award 0 and say why
 
 One finding per line, sorted most-severe first:
 
@@ -177,19 +214,41 @@ One finding per line, sorted most-severe first:
 
 ## Report format (Mode A — full file review)
 
+Write `REVIEW_REPORT_<YYYY-MM-DD>.md` at the project root.
+
+**Mandatory size constraints:**
+- Maximum 800 lines / 12,000 tokens
+- Use tables for ALL scoring — no prose paragraphs
+- No code examples in the report — reference `file:line` only
+- Summarize, do not enumerate (e.g. "4 tests passed", not listing each one)
+- If the report would exceed limits, cut detail from passing sections first
+
+**Required structure:**
+
 ```markdown
-## Review: <filename> — YYYY-MM-DD
+# SDET Training Review — YYYY-MM-DD
 
-| Task | Function | Status | Score | Issue |
-|------|----------|--------|-------|-------|
-| 1 | test_xxx | ❌ | 0 | time.sleep + bare assert |
-| 2 | test_yyy | ⚠️ | 2.94 | partial — missing cleanup |
-| 3 | test_zzz | ✅ | 5.88 | correct |
-| **TOTAL** | | | **X / 5.88** | |
+## Score Summary
 
-### Priority fixes
-1. file:line — most critical issue
-2. file:line — second issue
+| # | Exercise | Status | Score | Notes |
+|---|----------|--------|-------|-------|
+| 01 | Browser Context | ✅ | 5.88 | All tasks pass |
+| 02 | Network | ⚠️ | 2.94 | Tasks 1–3 done, 4–5 missing |
+| 03 | Selectors | ❌ | 0 | CSS selectors used throughout |
+| **TOTAL** | | | **X / 100** | Band: Pass / Excellent / Outstanding |
+
+## Test Execution Results
+
+| Suite | Passed | Failed | Errors | Command run |
+|-------|--------|--------|--------|-------------|
+| test_browser_context.py | 3 | 1 | 0 | pytest ... -v |
+
+## Priority Fixes
+
+1. file:line — issue + one-line fix
+2. file:line — issue + one-line fix
+
+## Top Strengths
+
+1. What was done particularly well
 ```
-
-Keep the report under 400 lines. Use tables, not prose. No inline code dumps.
