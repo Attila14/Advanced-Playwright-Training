@@ -9,6 +9,7 @@ import uuid
 from playwright.sync_api import Page, APIRequestContext, expect
 
 TASK_MANAGER = "https://testauto.app/task-manager-spa"
+API_V1 = "https://api.testauto.app/api/v1/tasks"
 
 
 # ---------------------------------------------------------------------------
@@ -33,7 +34,7 @@ def test_full_crud_chain(api_v1: APIRequestContext):
     task_id = None
     try:
         resp = api_v1.post(
-            "/tasks",
+            API_V1,
             data=json.dumps({
                 "title": title,
                 "description": "Chained workflow task",
@@ -46,17 +47,18 @@ def test_full_crud_chain(api_v1: APIRequestContext):
         assert resp.status == 201
         task_id = resp.json()["id"]
 
-        get_resp = api_v1.get(f"/tasks/{task_id}")
+        get_resp = api_v1.get(f"{API_V1}/{task_id}")
         assert get_resp.status == 200
-        assert get_resp.json()["title"] == title
-
-        # missing: PUT /tasks/{task_id} to update title and status=DONE
-        # missing: GET /tasks/{task_id} to verify updated fields
-        # missing: DELETE and 404 check
+        body = get_resp.json()
+        assert body["title"] == title
+        # missing: assert status and priority
+        # missing: PUT to update title and status=DONE
+        # missing: GET to verify update
+        # missing: DELETE and assert 404
 
     finally:
         if task_id:
-            api_v1.delete(f"/tasks/{task_id}")
+            api_v1.delete(f"{API_V1}/{task_id}")
 
 
 # ---------------------------------------------------------------------------
@@ -96,7 +98,7 @@ def test_api_create_ui_verify(page: Page, api_v1: APIRequestContext):
     task_id = None
     try:
         resp = api_v1.post(
-            "/tasks",
+            API_V1,
             data=json.dumps({"title": title, "status": "TODO", "priority": "MEDIUM"}),
             headers={"Content-Type": "application/json"},
         )
@@ -106,13 +108,13 @@ def test_api_create_ui_verify(page: Page, api_v1: APIRequestContext):
         # missing: page.goto(TASK_MANAGER)
         # missing: search for title
         # missing: expect(page.locator("table tbody tr").filter(has_text=title)).to_be_visible()
-        # missing: click row to open detail modal
-        # missing: expect(page.get_by_text("TODO")).to_be_visible() — status in modal
-        # missing: expect(page.get_by_text("MEDIUM")).to_be_visible() — priority in modal
+        # missing: click "View task details" button to open detail modal
+        # missing: expect(dialog.get_by_text("TODO")).to_be_visible() — status in modal
+        # missing: expect(dialog.get_by_text("MEDIUM")).to_be_visible() — priority in modal
 
     finally:
         if task_id:
-            api_v1.delete(f"/tasks/{task_id}")
+            api_v1.delete(f"{API_V1}/{task_id}")
 
 
 # ---------------------------------------------------------------------------
