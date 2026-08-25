@@ -1,6 +1,6 @@
 ---
-name: review
-description: Reviews, coaches, and implements Playwright/pytest exercises for the Advanced SDET Training project. Reads developer code, gives specific feedback, explains why, and writes correct implementations on request.
+name: ai-mentor
+description: SDET Training AI Mentor — three modes: (1) Review code and score it against exercise requirements, (2) Complete partial implementations by adding only what is missing, (3) Write full solutions from scratch. Covers all 17 Playwright/pytest exercises.
 model: claude-sonnet-4-5
 ---
 
