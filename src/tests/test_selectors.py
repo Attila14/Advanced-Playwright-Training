@@ -5,6 +5,7 @@ See Exercises/03_AdvancedLocatorStrategies.md for full instructions.
 Run: pytest src/tests/test_selectors.py -v --headed
 """
 import json
+import re
 import uuid
 from playwright.sync_api import Page, APIRequestContext, expect
 
@@ -28,14 +29,10 @@ def test_semantic_selectors_only(page: Page):
     # 3. page.get_by_role("link", name="Add New Task").click()
     # 4. expect(page).to_have_url(re.compile("taskModal=create"))
 
-    # Developer attempt: CSS selectors used throughout — violates the no-CSS rule
     page.goto(TASK_MANAGER)
-    search = page.locator("input[type='text']")          # wrong: use get_by_placeholder("Search tasks...")
-    search.fill("deploy")
-
-    add_btn = page.locator("nav a[href*='taskModal']")   # wrong: use get_by_role("link", name="Add New Task")
-    add_btn.click()
-    # missing: expect(page).to_have_url(re.compile("taskModal=create"))
+    page.get_by_placeholder("Search tasks...").fill("deploy")
+    page.get_by_role("button", name="Add New Task").click()
+    expect(page).to_have_url(re.compile("taskModal=create"))
 
 
 # ---------------------------------------------------------------------------
@@ -56,17 +53,12 @@ def test_filter_specific_row(page: Page):
     # 5. Read priority cell from within row using get_by_text or column header scope
     # 6. assert priority contains "High"
 
-    # Developer attempt: filter used correctly but priority asserted via positional nth-child
-    # which breaks if any column is added or reordered
     page.goto(TASK_MANAGER)
     expect(page.locator("table tbody tr").first).to_be_visible()
 
     row = page.locator("table tbody tr").filter(has_text="Deploy to Railway.app")
-    expect(row).to_be_visible()
-
-    priority_cell = row.locator("td:nth-child(4)")  # wrong: positional — fragile
-    expect(priority_cell).to_have_text("High")
-    # missing: expect(row).to_have_count(1)  — no check that exactly one row matched
+    expect(row).to_have_count(1)
+    expect(row).to_contain_text("High")
 
 
 # ---------------------------------------------------------------------------
@@ -81,16 +73,15 @@ def test_nth_first_last(page: Page):
     4. Read first row title — assert not empty string
     5. Read last row title — assert differs from first
     """
-    # TODO:
-    # 1. page.goto(TASK_MANAGER)
-    # 2. Change page size select to "10"
-    # 3. expect(page.locator("table tbody tr").first).to_be_visible()
-    # 4. rows = page.locator("table tbody tr")
-    # 5. assert rows.count() <= 10
-    # 6. first_title = rows.first.locator("td").first.inner_text()
-    # 7. last_title  = rows.last.locator("td").first.inner_text()
-    # 8. assert first_title != "" and last_title != "" and first_title != last_title
-    pass
+    page.goto(TASK_MANAGER)
+    page.get_by_label("Items per page:").select_option("10")
+    rows = page.locator("table tbody tr")
+    # Wait until the table actually refreshes to 10 rows
+    expect(rows).to_have_count(10)
+    assert rows.count() <= 10
+    first_title = rows.first.locator("td").nth(1).inner_text()
+    last_title = rows.last.locator("td").nth(1).inner_text()
+    assert first_title != "" and last_title != "" and first_title != last_title
 
 
 # ---------------------------------------------------------------------------
@@ -104,12 +95,16 @@ def test_board_view_column_scoping(page: Page):
     and count the task cards inside it.
     Assert the sum of all three column counts is > 0.
     """
-    # TODO:
-    # 1. page.goto(TASK_MANAGER + "?view=board")
-    # 2. For each column heading, find the column container (inspect the DOM)
-    # 3. count cards inside each column
-    # 4. assert total_count > 0
-    pass
+    page.goto(TASK_MANAGER)
+    page.get_by_role("button", name="Board view").click()
+    expect(page.locator(".task-board").first).to_be_visible()
+    total = 0
+    for status in ["TODO", "In Progress", "Done"]:
+        col = page.locator(".board-column").filter(
+            has=page.locator(".board-column-title", has_text=status)
+        )
+        total += col.locator(".board-task-card").count()
+    assert total > 0
 
 
 # ---------------------------------------------------------------------------
@@ -139,23 +134,28 @@ def test_dynamic_filter_loop(page: Page, api_v1: APIRequestContext):
     #     for task_id in task_ids:
     #         api_v1.delete(f"/tasks/{task_id}")
 
-    # Developer attempt: titles are hardcoded (not uuid-safe) and cleanup is outside try/finally
-    titles = ["Selector Alpha", "Selector Beta", "Selector Gamma"]  # wrong: should include uuid
+    uid = str(uuid.uuid4())[:8]
+    titles = [f"Selector Alpha {uid}", f"Selector Beta {uid}", f"Selector Gamma {uid}"]
     priorities = ["LOW", "MEDIUM", "HIGH"]
     task_ids = []
-
-    for title, priority in zip(titles, priorities):
-        resp = api_v1.post(
-            "/tasks",
-            data=json.dumps({"title": title, "status": "TODO", "priority": priority}),
-            headers={"Content-Type": "application/json"},
-        )
-        task_ids.append(resp.json()["id"])
-
-    page.goto(TASK_MANAGER)
-    page.get_by_placeholder("Search tasks...").fill("Selector")
-    for title in titles:
-        expect(page.locator("table tbody tr").filter(has_text=title)).to_be_visible()
-
-    for task_id in task_ids:  # wrong: cleanup must be inside try/finally
-        api_v1.delete(f"/tasks/{task_id}")
+    try:
+        for title, priority in zip(titles, priorities):
+            resp = api_v1.post(
+                "/api/v1/tasks",
+                data=json.dumps({"title": title, "status": "TODO", "priority": priority}),
+                headers={"Content-Type": "application/json"},
+            )
+            assert resp.ok, f"POST failed: {resp.status}"
+            task_ids.append(resp.json()["id"])
+        page.goto(TASK_MANAGER)
+        search = page.get_by_placeholder("Search tasks...")
+        search.fill(uid)
+        with page.expect_response(
+            lambda r: "/api/v1/tasks" in r.url and "summary" not in r.url and r.request.method == "GET"
+        ):
+            search.press("Enter")
+        for title in titles:
+            expect(page.locator("table tbody tr").filter(has_text=title)).to_be_visible()
+    finally:
+        for task_id in task_ids:
+            api_v1.delete(f"/api/v1/tasks/{task_id}")

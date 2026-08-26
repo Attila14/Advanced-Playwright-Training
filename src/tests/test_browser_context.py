@@ -34,15 +34,19 @@ def test_two_contexts_are_independent(browser: Browser):
     # 7. assert page1.url != page2.url
     # 8. ctx1.close(); ctx2.close()  — BOTH in finally
 
-    # Developer attempt: ctx2 is never closed — resource leak
     ctx1 = browser.new_context()
     ctx2 = browser.new_context()
-    page1 = ctx1.new_page()
-    page2 = ctx2.new_page()
-    page1.goto(TASK_MANAGER)
-    page2.goto("https://example.com")
-    assert page1.url == TASK_MANAGER
-    ctx1.close()  # wrong: ctx2 is never closed — also missing independence assertion
+    try:
+        page1 = ctx1.new_page()
+        page2 = ctx2.new_page()
+        page1.goto(TASK_MANAGER)
+        page2.goto("https://example.com")
+        assert page1.url == TASK_MANAGER
+        assert "example.com" in page2.url
+        assert page1.url != page2.url
+    finally:
+        ctx1.close()
+        ctx2.close()
 
 
 # ---------------------------------------------------------------------------
@@ -67,21 +71,23 @@ def test_save_and_restore_auth_state(browser: Browser, tmp_path):
     # 7. expect(page2.locator("table tbody tr").first).to_be_visible()
     # 8. ctx2.close()
 
-    # Developer attempt: ctx2 created WITHOUT storage_state — still on login page; time.sleep used
     state_path = str(tmp_path / "auth.json")
     ctx1 = browser.new_context()
-    page1 = ctx1.new_page()
-    page1.goto(TASK_MANAGER)
-    # (login steps omitted for brevity but should use expect())
-    ctx1.storage_state(path=state_path)
-    ctx1.close()
+    try:
+        page1 = ctx1.new_page()
+        page1.goto(TASK_MANAGER)
+        expect(page1.locator("table tbody tr").first).to_be_visible()
+        ctx1.storage_state(path=state_path)
+    finally:
+        ctx1.close()
 
-    ctx2 = browser.new_context()           # wrong: missing storage_state=state_path
-    page2 = ctx2.new_page()
-    page2.goto(TASK_MANAGER)
-    time.sleep(2)                          # wrong: use expect(locator).to_be_visible()
-    assert page2.locator("table").is_visible()  # wrong: use expect()
-    ctx2.close()
+    ctx2 = browser.new_context(storage_state=state_path)
+    try:
+        page2 = ctx2.new_page()
+        page2.goto(TASK_MANAGER)
+        expect(page2.locator("table tbody tr").first).to_be_visible()
+    finally:
+        ctx2.close()
 
 
 # ---------------------------------------------------------------------------
@@ -103,15 +109,22 @@ def test_multiple_viewports(browser: Browser, tmp_path):
     #   {"name": "tablet",  "width": 768,  "height": 1024},
     #   {"name": "mobile",  "width": 375,  "height": 812},
     # ]
-    # for vp in viewports:
-    #     ctx = browser.new_context(viewport={"width": vp["width"], "height": vp["height"]})
-    #     page = ctx.new_page()
-    #     page.goto(TASK_MANAGER)
-    #     path = str(tmp_path / f"{vp['name']}.png")
-    #     page.screenshot(path=path)
-    #     import os; assert os.path.getsize(path) > 5000
-    #     ctx.close()
-    pass
+    import os
+    viewports = [
+        {"name": "desktop", "width": 1280, "height": 720},
+        {"name": "tablet",  "width": 768,  "height": 1024},
+        {"name": "mobile",  "width": 375,  "height": 812},
+    ]
+    for vp in viewports:
+        ctx = browser.new_context(viewport={"width": vp["width"], "height": vp["height"]})
+        try:
+            pg = ctx.new_page()
+            pg.goto(TASK_MANAGER)
+            path = str(tmp_path / f"{vp['name']}.png")
+            pg.screenshot(path=path)
+            assert os.path.getsize(path) > 5000
+        finally:
+            ctx.close()
 
 
 # ---------------------------------------------------------------------------
@@ -128,17 +141,30 @@ def test_user_a_creates_task_user_b_reads(browser: Browser, api_v1: APIRequestCo
     # TODO:
     # title = f"Shared Task {uuid.uuid4()}"
     # task_id = None
-    # try:
-    #     resp = api_v1.post("/tasks", data=json.dumps({"title": title, "status": "TODO", "priority": "LOW"}), headers={...})
-    #     task_id = resp.json()["id"]
-    #     ctx_b = browser.new_context()
-    #     page_b = ctx_b.new_page()
-    #     page_b.goto(TASK_MANAGER)
-    #     expect(page_b.locator("table tbody tr").filter(has_text=title)).to_be_visible()
-    #     ctx_b.close()
-    # finally:
-    #     if task_id: api_v1.delete(f"/tasks/{task_id}")
-    pass
+    title = f"Shared Task {uuid.uuid4()}"
+    task_id = None
+    ctx_b = None
+    try:
+        resp = api_v1.post(
+            "/api/v1/tasks",
+            data=json.dumps({"title": title, "status": "TODO", "priority": "LOW"}),
+            headers={"Content-Type": "application/json"},
+        )
+        assert resp.ok, f"POST failed: {resp.status}"
+        task_id = resp.json()["id"]
+        ctx_b = browser.new_context()
+        page_b = ctx_b.new_page()
+        page_b.goto(TASK_MANAGER)
+        search = page_b.get_by_placeholder("Search tasks...")
+        search.fill(title)
+        with page_b.expect_response(lambda r: "/api/v1/tasks" in r.url and r.request.method == "GET"):
+            search.press("Enter")
+        expect(page_b.locator("table tbody tr").filter(has_text=title)).to_be_visible()
+    finally:
+        if ctx_b:
+            ctx_b.close()
+        if task_id:
+            api_v1.delete(f"/api/v1/tasks/{task_id}")
 
 
 # ---------------------------------------------------------------------------
@@ -153,10 +179,14 @@ def test_context_with_locale_and_headers(browser: Browser):
     - extra_http_headers={"X-Test-Agent": "playwright-training"}
     Navigate to Task Manager and assert the page loads (table visible).
     """
-    # TODO:
-    # 1. ctx = browser.new_context(locale="it-IT", timezone_id="Europe/Rome",
-    #         extra_http_headers={"X-Test-Agent": "playwright-training"})
-    # 2. page = ctx.new_page(); page.goto(TASK_MANAGER)
-    # 3. expect(page.locator("table tbody tr").first).to_be_visible()
-    # 4. ctx.close()
-    pass
+    ctx = browser.new_context(
+        locale="it-IT",
+        timezone_id="Europe/Rome",
+        extra_http_headers={"X-Test-Agent": "playwright-training"},
+    )
+    try:
+        page = ctx.new_page()
+        page.goto(TASK_MANAGER)
+        expect(page.locator("table tbody tr").first).to_be_visible()
+    finally:
+        ctx.close()
