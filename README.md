@@ -22,11 +22,26 @@ This project demonstrates advanced test automation using:
 
 The training targets a real, live application: [testauto.app/task-manager-spa](https://testauto.app/task-manager-spa)
 
-## 📋 Verification of the training will be done using a reviewer agent with GitHub Copilot
-  Once you have finished the exercises, you need to run through GitHub Copilot a review of your project. Follow the following steps:
-  1.On GitHub Copilot, select the agent mode together with the review.md file from the .github/agents/review.md 
-  2. Enter the following prompt 'Review my exercises and follow closely the instructions on the review.md agent and create a report in my project' and select a capable LLM then hit enter
-  3. Provide the report to us
+## 📋 Verification of the training
+
+Once you have finished the exercises, run a full review using one of the two options below and share the generated report with us.
+
+### Option 1 — GitHub Copilot (VS Code)
+
+1. In VS Code, open GitHub Copilot and switch to **Agent Mode**
+2. Attach the file `.github/agents/ai-mentor.md`
+3. Enter the prompt: `Review my exercises and follow closely the instructions on the ai-mentor agent and create a report in my project`
+4. Select a capable model and hit Enter
+5. Share the generated `REVIEW_REPORT_YYYY-MM-DD.md` with us
+
+### Option 2 — Claude Code (CLI)
+
+1. Open a terminal in the project root and run:
+   ```bash
+   claude --agent ai-mentor
+   ```
+2. Choose **mode A** (Review) or **mode D** (All of the above)
+3. Share the generated `REVIEW_REPORT_YYYY-MM-DD.md` with us
 
 ---
 
