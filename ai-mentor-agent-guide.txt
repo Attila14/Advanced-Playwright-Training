@@ -1,0 +1,166 @@
+AI Mentor Agent (Claude Code) — How It Works
+==============================================
+
+
+OVERVIEW
+--------
+The AI Mentor Agent is defined in .claude/agents/ai-mentor.md and is designed to
+support SDET trainees working through the Playwright/pytest exercises. It can
+implement exercises, review existing code, and generate a scored report automatically.
+
+
+HOW TO LAUNCH IT
+----------------
+Open a terminal in the project root and run:
+
+    claude --agent ai-mentor
+
+Then type your request in the interactive session that opens.
+
+
+SESSION START
+-------------
+At the beginning of every session, the agent asks which mode you want and, if you
+choose C or D, whether to write code directly into the file or show it as text to copy.
+
+
+FULL WORKFLOW
+-------------
+Every mode starts by reading the project context before acting:
+
+  1. Reads the exercise markdown (Exercises/XX_*.md)
+     -> Understands the requirements and tasks for that exercise
+
+  2. Reads conftest.py and page objects (src/pages/)
+     -> Knows which fixtures and POM classes are available
+
+  3. Acts based on the chosen mode (see Modes section below)
+
+  4. Runs pytest
+     -> python -m pytest src/tests/<file>.py -v
+
+  5. Analyses results
+     -> Which tests pass, which fail, and why
+
+  6. Writes REVIEW_REPORT_YYYY-MM-DD.md  [only in modes A and D]
+     -> Score table, test execution results, priority fixes, top strengths
+
+
+MODES
+-----
+At the start of each session the agent asks which mode you want:
+
+  A — Review
+      Reads the developer's existing code, runs the tests, scores each task,
+      and produces a written report. Use this when you want feedback on code
+      you have already written.
+
+  B — Complete
+      Fills in only the missing parts (pass, # TODO, raise NotImplementedError).
+      Never touches working code. Use this when you are partially done and want
+      the agent to finish what is missing.
+
+  C — From scratch
+      Writes the full implementation from zero, directly into the test file.
+      Use this when you want the agent to implement the entire exercise for you.
+
+  D — All of the above
+      Implements or fixes the code, runs the tests, and produces the full report.
+      Use this for a complete end-to-end cycle: implement -> run -> score.
+
+
+PROJECT CONTEXT
+---------------
+The agent is pre-configured with the full project topology so it can act without
+manual setup: it knows the app URL (testauto.app/task-manager-spa), the three API
+base URLs (V1 unauthenticated, V2 JWT, Buggy), the test credentials, and the
+commands to run UI vs API tests. It never needs the developer to explain where files
+are or how to run the suite.
+
+
+REVIEW GUIDELINES (Mode A checklist)
+-------------------------------------
+Before scoring, the agent explicitly checks five quality areas:
+
+  Correctness       — All TODOs replaced, tests pass against the live site,
+                      no hardcoded task IDs.
+
+  Cleanup           — Every POST is paired with a DELETE in try/finally;
+                      no generic titles like "test" or "my task" left behind.
+
+  Locator quality   — Semantic locators (get_by_role, get_by_label) used throughout;
+                      no positional CSS selectors; expect() used for assertions.
+
+  Fixture usage     — Page objects used in tests, not raw page.locator() calls;
+                      api_v1/api_v2 fixtures applied with the correct scope.
+
+  Parallel safety   — Unique titles generated with uuid; no test depends on data
+                      created by another test.
+
+
+GUARDRAILS — apply to every exercise
+-------------------------------------
+A fixed set of rules that never change regardless of the exercise being reviewed.
+Violations trigger an automatic score deduction (red flags):
+
+  - time.sleep()                        -> use expect() with built-in retry
+  - wait_for_load_state("networkidle")  -> use expect() instead
+  - assert locator.is_visible()         -> use expect(locator).to_be_visible()
+  - Hardcoded titles or task IDs        -> use f"Task {uuid.uuid4()}"
+  - Missing try/finally for API cleanup -> DELETE must run even if the test fails
+  - pass / raise NotImplementedError    -> stubs must be replaced with real code
+  - Leading-slash API paths (/tasks)    -> drops the /api/v1 segment; omit the slash
+
+
+PAGE OBJECT MODEL STANDARDS
+----------------------------
+When the exercise involves UI, the agent enforces POM conventions: all page objects
+inherit from BasePage, locators are defined as instance attributes in __init__ (not
+hardcoded inside methods), and test functions call POM methods only — no raw
+page.locator() calls are allowed inside test bodies.
+
+
+SCORING
+-------
+Each exercise is worth 5.88 points (17 exercises x 5.88 = ~100 points total).
+
+  PASS            -> 5.88 pts  (all tasks correct, tests pass)
+  PARTIAL         -> proportional (some tasks done, others missing or broken)
+  FAIL            -> 0 pts     (attempted but uses wrong patterns)
+  NOT ATTEMPTED   -> 0 pts     (all functions still pass or raise NotImplementedError)
+
+Bands:  Pass >= 50  |  Excellent >= 75  |  Outstanding = 100
+
+
+FEEDBACK TONE AND FORMAT
+------------------------
+The agent always quotes the exact file:line for every finding, explains why it is an
+issue, and provides a concrete one-line fix. Findings are sorted most-severe first.
+Good work is explicitly acknowledged with a checkmark so the developer knows what
+to keep, not just what to fix.
+
+
+WHEN IS THE REPORT GENERATED?
+------------------------------
+The REVIEW_REPORT_YYYY-MM-DD.md file is written ONLY in modes A and D.
+These are the two modes that include a scoring evaluation.
+
+Modes B and C only confirm in the chat what was changed — no report file is produced.
+
+  Mode A  ->  report generated   (review only, no code changes)
+  Mode B  ->  NO report          (completes missing code only)
+  Mode C  ->  NO report          (full implementation from scratch)
+  Mode D  ->  report generated   (implement + run + score)
+
+
+REPORT STRUCTURE (modes A and D)
+---------------------------------
+The generated REVIEW_REPORT_YYYY-MM-DD.md contains four sections:
+
+  Score Summary          -> table with exercise name, status, score out of 5.88, notes
+  Test Execution Results -> table with passed/failed/errors per suite and command run
+  Priority Fixes         -> file:line, issue, one-line fix — most severe first
+  Top Strengths          -> what was done particularly well
+
+The report is capped at 800 lines. Detail is cut from passing sections first if the
+limit is approached.
