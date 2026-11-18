@@ -9,9 +9,254 @@ Advanced Self-Study Training Program  ** Organizatory curriculum **
 This training is designed as an advanced self-study program. Participants will follow the instructions provided in the README.md file, clone the repository, and complete the required exercises independently.
 To support the learning process, participants can refer to the videos linked within the README.md documentation. The expected duration of the training is up to 40 hours. However, if additional time is needed, participants may continue at a reasonable pace until they complete all requirements.
 
-For questions or support during the training, a dedicated Microsoft Teams group will be available. Participants can post their questions there, and the trainers will respond as their availability permits.
+For questions or support during the training, a dedicated Microsoft Teams group is available (https://teams.microsoft.com/l/channel/19%3AsYBwZNxmvNGMN0I8mPZiB15OueNG5XhDKe6EV3tn-b01%40thread.tacv2/SelfStudy_Advanced_PlayWright_Training?groupId=008a7c89-4582-424e-b229-1f74766df409&tenantId=e0793d39-0939-496d-b129-198edd916feb). Participants can post their questions there, and the trainers will respond as their availability permits.
 Upon completing the training, participants must review their solutions using the AI agent provided in the .github folder. Instructions for running and using the agent are available in the README.md file. The resulting output should then be shared in the Microsoft Teams group for review and feedback.
 **************************************************************************************************************************
+# 🧭 How the Chapters Fit Together
+
+The exercises progress from Playwright fundamentals toward production-level automation engineering.
+
+## Foundation
+
+```text
+01 Browser Context Management
+       ↓
+02 Network Interception
+       ↓
+03 Advanced Locator Strategies
+```
+
+You first learn how the browser is structured, how the UI communicates with backend services, and how to interact reliably with elements.
+
+## Debugging and Test Quality
+
+```text
+04 Performance and Tracing
+       ↓
+05 Visual Testing
+```
+
+You learn how to investigate failures and identify problems that normal functional assertions cannot detect.
+
+## Framework Architecture
+
+```text
+06 Advanced POM Patterns
+       ↓
+07 Fixtures and Test Lifecycle
+```
+
+You learn how to organize automation code so that a test suite remains maintainable as it grows.
+
+## Scaling Automation
+
+```text
+08 Parallel Execution and Sharding
+       ↓
+09 Allure Reporting
+```
+
+You learn how to run a large regression suite efficiently and communicate its results clearly.
+
+## API Automation
+
+```text
+10 API Authentication
+       ↓
+11 Advanced Response Validation
+       ↓
+12 API Fixtures and Test Data
+```
+
+You build the skills required to test backend services and use APIs as part of a broader automation strategy.
+
+## Real End-to-End Testing
+
+```text
+13 Chained Workflows and Hybrid Tests
+       ↓
+14 Multi-User and Role-Based Testing
+```
+
+You combine UI testing, API testing, authentication, browser contexts, and test data into realistic business workflows.
+
+## Production-Level Test Quality
+
+```text
+15 Resilience and Edge Cases
+       ↓
+16 Data-Driven Testing
+       ↓
+17 Auto-Waiting and Flakiness
+```
+
+You learn how to build test suites that cover unusual conditions, scale across many datasets, and remain reliable in CI/CD environments.
+
+---
+
+# 🧠 Problem and Automation Technique Mapping
+
+A major objective of this training is to recognize a testing problem and identify the appropriate automation technique.
+
+| When you encounter this situation | Technique to consider |
+|---|---|
+| I need two users logged in simultaneously | Browser Contexts |
+| I need the backend to return a particular error | Network Interception |
+| My locator keeps breaking | Semantic and Scoped Locators |
+| My test fails only in CI | Trace Viewer and Diagnostics |
+| The application works but visually looks wrong | Visual Testing |
+| My framework contains duplicated UI code | POM and Component Objects |
+| Every test repeats the same setup | pytest Fixtures |
+| My regression suite takes too long | Parallel Execution and Sharding |
+| Nobody understands why a CI test failed | Allure Reporting |
+| My API returns `401` or `403` | Authentication and Authorization Testing |
+| My API returns `200` but incorrect data | Advanced Response Validation |
+| A test needs 50 records before it can start | API Fixtures and Test Data |
+| UI preparation makes tests extremely slow | Hybrid API and UI Testing |
+| Different users have different permissions | Multi-User and Role-Based Testing |
+| I need to verify invalid or unexpected inputs | Resilience and Edge Cases |
+| The same scenario must run with 20 inputs | Data-Driven Testing |
+| A test randomly fails while the application loads | Auto-Waiting and Web-First Assertions |
+
+---
+
+> 💡 Recommendation:
+>
+> Complete the exercises sequentially. Each module introduces concepts that are reused in later exercises.
+>
+> The objective is not simply to learn individual Playwright commands. By the end of the training, you should be able to recognize a real testing problem, select an appropriate automation technique, and apply it within a maintainable Playwright and pytest framework.
+
+---
+
+
+## 🌐 Application Under Test
+
+| | URL |
+|---|---|
+| UI (list view) | https://testauto.app/task-manager-spa |
+| UI (board view) | https://testauto.app/task-manager-spa?view=board |
+| Create modal | https://testauto.app/task-manager-spa?taskModal=create |
+| API V1 (no auth) | https://api.testauto.app/api/v1 |
+| API V2 (JWT) | https://api.testauto.app/api/v2 |
+| Buggy API | https://api.testauto.app/api/buggy |
+| API Docs | https://api.testauto.app/swagger-ui/index.html |
+| App Docs | https://testauto.app/docs |
+
+**Test credentials (API V2):** `admin/admin123` · `user/user123` · `testuser/test123`
+
+---
+
+## 📁 Project Structure
+
+```
+playwright-python-advanced-training/
+├── Exercises/
+│   ├── 01_BrowserContextManagement.md
+│   ├── 02_NetworkInterception.md
+│   ├── 03_AdvancedLocatorStrategies.md
+│   ├── 04_PerformanceAndTracing.md
+│   ├── 05_VisualTesting.md
+│   ├── 06_AdvancedPOMPatterns.md
+│   ├── 07_FixturesAndTestLifecycle.md
+│   ├── 08_ParallelExecutionAndSharding.md
+│   ├── 09_AllureReporting.md
+│   ├── 10_APIAuthentication.md
+│   ├── 11_AdvancedResponseValidation.md
+│   ├── 12_APIFixturesAndTestData.md
+│   ├── 13_ChainedWorkflowsAndHybridTests.md
+│   ├── 14_MultiUserAndRoleBasedTesting.md
+│   ├── 15_ResilienceAndEdgeCases.md
+│   └── 16_DataDrivenTestingGUIAndAPI.md
+├── src/
+│   ├── pages/
+│   │   ├── task_manager_page.py    # skeleton — fill in Exercise 06
+│   │   ├── task_form_modal.py
+│   │   ├── task_detail_modal.py
+│   │   └── login_modal.py           # Exercise 17 — SPA login modal
+│   ├── tests/
+│   │   ├── smoke_test.py           # run first to verify setup
+│   │   ├── test_browser_context.py # Exercise 01
+│   │   ├── test_network.py         # Exercise 02
+│   │   ├── test_selectors.py       # Exercise 03
+│   │   ├── test_performance.py     # Exercise 04
+│   │   ├── test_visual.py          # Exercise 05
+│   │   ├── test_advanced_pom.py    # Exercise 06
+│   │   ├── test_fixtures.py        # Exercise 07
+│   │   ├── test_parallel.py        # Exercise 08
+│   │   ├── test_allure.py          # Exercise 09
+│   │   ├── test_api_auth.py        # Exercise 10
+│   │   ├── test_api_validation.py  # Exercise 11
+│   │   ├── test_api_data.py        # Exercise 12
+│   │   ├── test_workflows.py       # Exercise 13
+│   │   ├── test_multi_user.py      # Exercise 14
+│   │   ├── test_resilience.py      # Exercise 15
+│   │   ├── test_data_driven.py     # Exercise 16
+│   │   └── test_auto_waiting.py    # Exercise 17
+│   └── conftest.py
+├── .github/
+│   ├── agents/review.md
+│   └── workflows/playwright.yml
+├── requirements.txt
+├── pytest.ini
+└── README.md
+```
+
+---
+
+## 🧪 Example Tests
+
+### UI Testing (Playwright)
+The smoke test in `src/tests/smoke_test.py` demonstrates basic navigation, element visibility, and API health checks.
+
+### API Testing (Playwright APIRequestContext)
+The `api_v1` and `api_v2` fixtures in `src/conftest.py` provide pre-configured request contexts — one unauthenticated, one pre-logged-in with JWT.
+
+---
+
+## 💡 Best Practices
+
+- Page object code goes in `src/pages/` — locators and actions only
+- Test code goes in `src/tests/` — test functions, no raw selectors
+- Shared fixtures go in `src/conftest.py`
+- Every test that creates API data **must clean it up** — use `try/finally`
+- Use `uuid` to generate unique task titles — prevents cross-test interference
+- Prefer `get_by_role`, `get_by_label`, `get_by_placeholder` over CSS selectors
+- Use `expect()` for assertions — it retries automatically
+
+---
+
+## 🔧 Configuration
+
+```bash
+pytest --browser=firefox --headed --slowmo=500   # custom browser run
+pytest -n 4                                       # parallel
+pytest -m fast                                    # fast tests only
+pytest --alluredir=allure-results                 # with Allure
+```
+
+---
+
+## 📚 Dependencies
+
+- Playwright 1.44+  ·  pytest 8+  ·  pytest-playwright 0.5+
+- pytest-xdist 3.5+  ·  pytest-shard 0.1.2+  ·  allure-pytest 2.13+
+
+---
+
+## 🤝 Contributing
+
+This is a training project. Feel free to add test cases, improve page objects, or share your learnings.
+
+---
+
+## 📖 Resources
+
+The following videos, playlists, articles, and documentation are mapped to each training exercise and can be used as learning material while progressing through the course.
+
+
+
+
+
 This project demonstrates advanced test automation using:
 
 - **Playwright for Python** for UI/Web and API testing
@@ -1286,246 +1531,7 @@ The test now waits for the application state that matters to the scenario.
 
 ---
 
-# 🧭 How the Chapters Fit Together
 
-The exercises progress from Playwright fundamentals toward production-level automation engineering.
-
-## Foundation
-
-```text
-01 Browser Context Management
-       ↓
-02 Network Interception
-       ↓
-03 Advanced Locator Strategies
-```
-
-You first learn how the browser is structured, how the UI communicates with backend services, and how to interact reliably with elements.
-
-## Debugging and Test Quality
-
-```text
-04 Performance and Tracing
-       ↓
-05 Visual Testing
-```
-
-You learn how to investigate failures and identify problems that normal functional assertions cannot detect.
-
-## Framework Architecture
-
-```text
-06 Advanced POM Patterns
-       ↓
-07 Fixtures and Test Lifecycle
-```
-
-You learn how to organize automation code so that a test suite remains maintainable as it grows.
-
-## Scaling Automation
-
-```text
-08 Parallel Execution and Sharding
-       ↓
-09 Allure Reporting
-```
-
-You learn how to run a large regression suite efficiently and communicate its results clearly.
-
-## API Automation
-
-```text
-10 API Authentication
-       ↓
-11 Advanced Response Validation
-       ↓
-12 API Fixtures and Test Data
-```
-
-You build the skills required to test backend services and use APIs as part of a broader automation strategy.
-
-## Real End-to-End Testing
-
-```text
-13 Chained Workflows and Hybrid Tests
-       ↓
-14 Multi-User and Role-Based Testing
-```
-
-You combine UI testing, API testing, authentication, browser contexts, and test data into realistic business workflows.
-
-## Production-Level Test Quality
-
-```text
-15 Resilience and Edge Cases
-       ↓
-16 Data-Driven Testing
-       ↓
-17 Auto-Waiting and Flakiness
-```
-
-You learn how to build test suites that cover unusual conditions, scale across many datasets, and remain reliable in CI/CD environments.
-
----
-
-# 🧠 Problem and Automation Technique Mapping
-
-A major objective of this training is to recognize a testing problem and identify the appropriate automation technique.
-
-| When you encounter this situation | Technique to consider |
-|---|---|
-| I need two users logged in simultaneously | Browser Contexts |
-| I need the backend to return a particular error | Network Interception |
-| My locator keeps breaking | Semantic and Scoped Locators |
-| My test fails only in CI | Trace Viewer and Diagnostics |
-| The application works but visually looks wrong | Visual Testing |
-| My framework contains duplicated UI code | POM and Component Objects |
-| Every test repeats the same setup | pytest Fixtures |
-| My regression suite takes too long | Parallel Execution and Sharding |
-| Nobody understands why a CI test failed | Allure Reporting |
-| My API returns `401` or `403` | Authentication and Authorization Testing |
-| My API returns `200` but incorrect data | Advanced Response Validation |
-| A test needs 50 records before it can start | API Fixtures and Test Data |
-| UI preparation makes tests extremely slow | Hybrid API and UI Testing |
-| Different users have different permissions | Multi-User and Role-Based Testing |
-| I need to verify invalid or unexpected inputs | Resilience and Edge Cases |
-| The same scenario must run with 20 inputs | Data-Driven Testing |
-| A test randomly fails while the application loads | Auto-Waiting and Web-First Assertions |
-
----
-
-> 💡 Recommendation:
->
-> Complete the exercises sequentially. Each module introduces concepts that are reused in later exercises.
->
-> The objective is not simply to learn individual Playwright commands. By the end of the training, you should be able to recognize a real testing problem, select an appropriate automation technique, and apply it within a maintainable Playwright and pytest framework.
-
----
-
-
-## 🌐 Application Under Test
-
-| | URL |
-|---|---|
-| UI (list view) | https://testauto.app/task-manager-spa |
-| UI (board view) | https://testauto.app/task-manager-spa?view=board |
-| Create modal | https://testauto.app/task-manager-spa?taskModal=create |
-| API V1 (no auth) | https://api.testauto.app/api/v1 |
-| API V2 (JWT) | https://api.testauto.app/api/v2 |
-| Buggy API | https://api.testauto.app/api/buggy |
-| API Docs | https://api.testauto.app/swagger-ui/index.html |
-| App Docs | https://testauto.app/docs |
-
-**Test credentials (API V2):** `admin/admin123` · `user/user123` · `testuser/test123`
-
----
-
-## 📁 Project Structure
-
-```
-playwright-python-advanced-training/
-├── Exercises/
-│   ├── 01_BrowserContextManagement.md
-│   ├── 02_NetworkInterception.md
-│   ├── 03_AdvancedLocatorStrategies.md
-│   ├── 04_PerformanceAndTracing.md
-│   ├── 05_VisualTesting.md
-│   ├── 06_AdvancedPOMPatterns.md
-│   ├── 07_FixturesAndTestLifecycle.md
-│   ├── 08_ParallelExecutionAndSharding.md
-│   ├── 09_AllureReporting.md
-│   ├── 10_APIAuthentication.md
-│   ├── 11_AdvancedResponseValidation.md
-│   ├── 12_APIFixturesAndTestData.md
-│   ├── 13_ChainedWorkflowsAndHybridTests.md
-│   ├── 14_MultiUserAndRoleBasedTesting.md
-│   ├── 15_ResilienceAndEdgeCases.md
-│   └── 16_DataDrivenTestingGUIAndAPI.md
-├── src/
-│   ├── pages/
-│   │   ├── task_manager_page.py    # skeleton — fill in Exercise 06
-│   │   ├── task_form_modal.py
-│   │   ├── task_detail_modal.py
-│   │   └── login_modal.py           # Exercise 17 — SPA login modal
-│   ├── tests/
-│   │   ├── smoke_test.py           # run first to verify setup
-│   │   ├── test_browser_context.py # Exercise 01
-│   │   ├── test_network.py         # Exercise 02
-│   │   ├── test_selectors.py       # Exercise 03
-│   │   ├── test_performance.py     # Exercise 04
-│   │   ├── test_visual.py          # Exercise 05
-│   │   ├── test_advanced_pom.py    # Exercise 06
-│   │   ├── test_fixtures.py        # Exercise 07
-│   │   ├── test_parallel.py        # Exercise 08
-│   │   ├── test_allure.py          # Exercise 09
-│   │   ├── test_api_auth.py        # Exercise 10
-│   │   ├── test_api_validation.py  # Exercise 11
-│   │   ├── test_api_data.py        # Exercise 12
-│   │   ├── test_workflows.py       # Exercise 13
-│   │   ├── test_multi_user.py      # Exercise 14
-│   │   ├── test_resilience.py      # Exercise 15
-│   │   ├── test_data_driven.py     # Exercise 16
-│   │   └── test_auto_waiting.py    # Exercise 17
-│   └── conftest.py
-├── .github/
-│   ├── agents/review.md
-│   └── workflows/playwright.yml
-├── requirements.txt
-├── pytest.ini
-└── README.md
-```
-
----
-
-## 🧪 Example Tests
-
-### UI Testing (Playwright)
-The smoke test in `src/tests/smoke_test.py` demonstrates basic navigation, element visibility, and API health checks.
-
-### API Testing (Playwright APIRequestContext)
-The `api_v1` and `api_v2` fixtures in `src/conftest.py` provide pre-configured request contexts — one unauthenticated, one pre-logged-in with JWT.
-
----
-
-## 💡 Best Practices
-
-- Page object code goes in `src/pages/` — locators and actions only
-- Test code goes in `src/tests/` — test functions, no raw selectors
-- Shared fixtures go in `src/conftest.py`
-- Every test that creates API data **must clean it up** — use `try/finally`
-- Use `uuid` to generate unique task titles — prevents cross-test interference
-- Prefer `get_by_role`, `get_by_label`, `get_by_placeholder` over CSS selectors
-- Use `expect()` for assertions — it retries automatically
-
----
-
-## 🔧 Configuration
-
-```bash
-pytest --browser=firefox --headed --slowmo=500   # custom browser run
-pytest -n 4                                       # parallel
-pytest -m fast                                    # fast tests only
-pytest --alluredir=allure-results                 # with Allure
-```
-
----
-
-## 📚 Dependencies
-
-- Playwright 1.44+  ·  pytest 8+  ·  pytest-playwright 0.5+
-- pytest-xdist 3.5+  ·  pytest-shard 0.1.2+  ·  allure-pytest 2.13+
-
----
-
-## 🤝 Contributing
-
-This is a training project. Feel free to add test cases, improve page objects, or share your learnings.
-
----
-
-## 📖 Resources
-
-The following videos, playlists, articles, and documentation are mapped to each training exercise and can be used as learning material while progressing through the course.
 
 ---
 
